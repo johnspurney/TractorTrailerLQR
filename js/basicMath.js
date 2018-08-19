@@ -161,3 +161,21 @@ bm.mul = function(matrix, number) {
 
   return mat;
 };
+
+/**
+ * matrix: valid matrix
+ */
+bm.transpose = function(matrix) {
+  let mat = [];
+  let currentRow = [];
+
+  for (let j = 0; j < matrix[0].length; ++j) {
+    currentRow = [];
+    for (let i = 0; i < matrix.length; ++i) {
+      currentRow.push(matrix[i][j]);
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};

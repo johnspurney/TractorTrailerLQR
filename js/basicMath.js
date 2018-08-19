@@ -205,3 +205,80 @@ bm.dot = function(lhs, rhs) {
 
   return mat;
 };
+
+/**
+ * matrix: valid square matrix
+ */
+bm.inv = function(matrix) {
+  let dim = matrix.length;
+  let i = 0;
+  let ii = 0;
+  let j = 0;
+  let e = 0;
+  let t = 0;
+  // Identity matrix
+  var I = [];
+  // Copy of input matrix
+  var C = [];
+
+  // Initialize the identity matrix and make a copy of the input matrix
+  for (i = 0; i < dim; i++) {
+    I[I.length] = [];
+    C[C.length] = [];
+    for (j = 0; j < dim; j++) {
+      if (i == j) {
+        I[i][j] = 1;
+      } else {
+        I[i][j] = 0;
+      }
+      C[i][j] = matrix[i][j];
+    }
+  }
+
+  // Perform elementary row operations
+  for (i = 0; i < dim; i++) {
+    e = C[i][i];
+
+    if (e == 0) {
+      for (ii = i + 1; ii < dim; ii++) {
+        if (C[ii][i] != 0) {
+          for (j = 0; j < dim; j++) {
+            e = C[i][j];
+            C[i][j] = C[ii][j];
+            C[ii][j] = e;
+            e = I[i][j];
+            I[i][j] = I[ii][j];
+            I[ii][j] = e;
+          }
+          break;
+        }
+      }
+
+      e = C[i][i];
+
+      if (e == 0) {
+        return;
+      }
+    }
+
+    for (j = 0; j < dim; j++) {
+      C[i][j] = C[i][j] / e;
+      I[i][j] = I[i][j] / e;
+    }
+
+    for (ii = 0; ii < dim; ii++) {
+      if (ii == i) {
+        continue;
+      }
+
+      e = C[ii][i];
+
+      for (j = 0; j < dim; j++) {
+        C[ii][j] -= e * C[i][j];
+        I[ii][j] -= e * I[i][j];
+      }
+    }
+  }
+
+  return I;
+};

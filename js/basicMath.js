@@ -179,3 +179,29 @@ bm.transpose = function(matrix) {
 
   return mat;
 };
+
+/**
+ * lhs, rhs: valid matrices
+ */
+bm.dot = function(lhs, rhs) {
+  let mat = [];
+  let currentRow = [];
+  let numberOfRows = lhs.length;
+  let numberOfCols = rhs[0].length;
+  let newSize = lhs[0].length;
+  let currentNum = 0;
+
+  for (let i = 0; i < numberOfRows; ++i) {
+    currentRow = [];
+    for (let j = 0; j < numberOfCols; ++j) {
+      currentNum = 0;
+      for (let k = 0; k < newSize; ++k) {
+        currentNum += lhs[i][k] * rhs[k][j];
+      }
+      currentRow.push(currentNum);
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};

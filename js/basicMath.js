@@ -141,3 +141,23 @@ bm.add = function(lhs, rhs) {
 
   return mat;
 };
+
+/**
+ * lhs, rhs: valid matrices
+ *
+ * Element-wise matrixElement * number
+ */
+bm.mul = function(matrix, number) {
+  let mat = [];
+  let currentRow = [];
+
+  for (let i = 0; i < matrix.length; ++i) {
+    currentRow = [];
+    for (let j = 0; j < matrix[0].length; ++j) {
+      currentRow.push(matrix[i][j] * number);
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};

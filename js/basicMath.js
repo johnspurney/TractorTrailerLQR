@@ -55,3 +55,49 @@ bm.max = function(mat) {
 
   return max;
 };
+
+/**
+ * lhs, rhs: valid matrices
+ *
+ * Element-wise comparison lhsElement === rhsElement
+ */
+bm.equal = function(lhs, rhs) {
+  let numRowsLhs = lhs.length;
+  let numColsLhs = lhs[0].length;
+  let numRowsRhs = rhs.length;
+  let numColsRhs = rhs[0].length;
+
+  if (numRowsLhs !== numRowsRhs || numColsLhs !== numColsRhs) {
+    return false;
+  }
+
+  for (let i = 0; i < numRowsLhs; ++i) {
+    for (let j = 0; j < numColsLhs; ++j) {
+      if (lhs[i][j] !== rhs[i][j]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * matrix: valid matrix
+ *
+ * Returns the absolute valued matrix
+ */
+bm.abs = function(matrix) {
+  let mat = [];
+  let currentRow = [];
+
+  for (let i = 0; i < matrix.length; ++i) {
+    currentRow = [];
+    for (let j = 0; j < matrix[0].length; ++j) {
+      currentRow.push(Math.abs(matrix[i][j]));
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};

@@ -6,7 +6,28 @@
   <link rel="stylesheet" href="css/pretty.css">
 </head>
 <body>
-  <p>test</p>
+  <div id="app">
+      <div id="canvasAndButtonsWrapper">
+        <div id="canvasWrapper">
+          <canvas id="canvasBackground" width="640" height="400"></canvas>
+          <canvas id="canvasDynamic" width="640" height="400"></canvas>
+        </div>
+
+        <div id="buttonsWrapper">
+          <button id="startSimButton">Start Simulation</button>
+          <button id="clearPathButton">Clear Path</button>
+        </div>
+      </div>
+
+      <div id="userTools">
+        <p id="coordinateIndicator">(0, 0)</p>
+        <p id="pathbrushStatusText">Pathbrush Status:</p>
+        <p id="pathbrushStatus">Off</p>
+        <p id= "mapSelectText">Map Selection:</p>
+        <select id="mapSelect"></select>
+      </div>
+  </div>
+
   <script src="js/simulator.js"></script>
 </body>
 </html>

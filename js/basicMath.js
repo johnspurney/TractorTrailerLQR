@@ -85,7 +85,7 @@ bm.equal = function(lhs, rhs) {
 /**
  * matrix: valid matrix
  *
- * Returns the absolute valued matrix
+ * Element-wise Math.abs(element)
  */
 bm.abs = function(matrix) {
   let mat = [];
@@ -95,6 +95,46 @@ bm.abs = function(matrix) {
     currentRow = [];
     for (let j = 0; j < matrix[0].length; ++j) {
       currentRow.push(Math.abs(matrix[i][j]));
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};
+
+/**
+ * lhs, rhs: valid matrices
+ *
+ * Element-wise lhsElement - rhsElement
+ */
+bm.sub = function(lhs, rhs) {
+  let mat = [];
+  let currentRow = [];
+
+  for (let i = 0; i < lhs.length; ++i) {
+    currentRow = [];
+    for (let j = 0; j < lhs[0].length; ++j) {
+      currentRow.push(lhs[i][j] - rhs[i][j]);
+    }
+    mat.push(currentRow);
+  }
+
+  return mat;
+};
+
+/**
+ * lhs, rhs: valid matrices
+ *
+ * Element-wise lhsElement + rhsElement
+ */
+bm.add = function(lhs, rhs) {
+  let mat = [];
+  let currentRow = [];
+
+  for (let i = 0; i < lhs.length; ++i) {
+    currentRow = [];
+    for (let j = 0; j < lhs[0].length; ++j) {
+      currentRow.push(lhs[i][j] + rhs[i][j]);
     }
     mat.push(currentRow);
   }

@@ -290,7 +290,7 @@ bm.inv = function(matrix) {
  *
  * Returns the solution to the discrete algebraic riccati equation
  */
-bm.solve_DARE = function(A, B, Q, R) {
+bm.solveDARE = function(A, B, Q, R) {
   var maxIterations = 100;
   var epsilon = 0.01;
   var X = Q;

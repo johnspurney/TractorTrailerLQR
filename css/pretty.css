@@ -5,11 +5,11 @@ body {
 #app {
   display: inline-flex;
   border: 1px solid lightgrey;
-  border-bottom-right-radius: 5px;
 }
 
 #canvasAndButtonsWrapper {
-  display: inline-grid;
+  background-color: #dce5f1;
+  display: block;
 }
 
 #canvasWrapper {
@@ -38,7 +38,7 @@ body {
   float: right;
 }
 
-button {
+#buttonsWrapper button {
   padding: 1em;
   margin: 0;
   font-family: sans-serif;
@@ -54,7 +54,6 @@ p {
   padding-left: 5px;
   padding-right: 5px;
   background-color: #dce5f1;
-  border-bottom-right-radius: 5px;
 }
 
 #mapSelectText {
@@ -81,4 +80,24 @@ p {
   background-color: white;
   padding-top: 3px;
   padding-bottom: 3px;
+}
+
+#tractorTrailerSettings {
+  padding-left: 5px;
+  padding-right: 5px;
+  background-color: #bfbce4;
+  font-family: sans-serif;
+}
+
+#tractorTrailerSettings p {
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#tractorTrailerSettings button {
+  margin-top: 3px;
+  width: 100%;
+  padding: 0.2em;
+  font-size: 1em;
 }

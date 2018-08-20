@@ -23,6 +23,7 @@ let mapSelect = document.getElementById('mapSelect');
 let coordinateIndicator = document.getElementById('coordinateIndicator');
 let canvasDynamic = document.getElementById('canvasDynamic');
 let canvasBackground = document.getElementById('canvasBackground');
+let tractorTrailerSettingsForm = document.getElementById('tractorTrailerSettings');
 let ctxD = canvasDynamic.getContext('2d');
 let ctxB = canvasBackground.getContext('2d');
 
@@ -43,6 +44,57 @@ let tractorTrailerSettings = {
   vehicleColor: 'rgba(21, 88, 116, 0.7)',
   hitchColor: 'OrangeRed'
 };
+
+function initializeTractorTrailerSettingsForm() {
+  let skippedKeys = ['steerConstraints', 'hitchConstraints', 'vehicleColor', 'hitchColor'];
+
+  let keys = Object.keys(tractorTrailerSettings);
+  let values = Object.values(tractorTrailerSettings);
+
+  let title = document.createElement('p');
+  title.innerHTML = 'Vehicle Settings';
+  tractorTrailerSettingsForm.appendChild(title);
+
+  let div = null;
+  let span = null;
+  let br = null;
+  let input = null;
+
+  for (let i = 0; i < keys.length; ++i) {
+    if (!skippedKeys.includes(keys[i])) {
+      div = document.createElement('div');
+      span = document.createElement('span');
+      span.innerHTML = keys[i];
+      br = document.createElement('br');
+      input = document.createElement('input');
+      input.value = values[i];
+
+      div.appendChild(span);
+      div.appendChild(br);
+      div.appendChild(input);
+      tractorTrailerSettingsForm.appendChild(div);
+    }
+  }
+
+  let submitButton = document.createElement('button');
+  submitButton.type = 'button';
+  submitButton.innerHTML = 'Update Settings';
+  tractorTrailerSettingsForm.appendChild(submitButton);
+
+  submitButton.addEventListener('click', function() {
+    let settings = tractorTrailerSettingsForm.children;
+    let setting = null;
+    let settingValue = null;
+    for (let i = 0; i < settings.length; ++i) {
+      if (settings[i].nodeName === 'DIV' && !skippedKeys.includes(settings[i])) {
+        setting = settings[i].children[0].innerHTML;
+        settingValue = Number(settings[i].children[2].value);
+        tractorTrailerSettings[setting] = settingValue;
+      }
+    }
+  });
+}
+initializeTractorTrailerSettingsForm();
 
 function initializeMapSelect() {
   let optionElement = null;

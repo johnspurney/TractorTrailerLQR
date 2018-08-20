@@ -282,3 +282,55 @@ bm.inv = function(matrix) {
 
   return I;
 };
+
+/**
+ * A, B: Dynamics and input matrices, for example, a linearized state space
+ * model might be in the form x': Ax+Bu
+ * Q, R: State and input weight matrices, Q tends to be an identity matrix
+ *
+ * Returns the solution to the discrete algebraic riccati equation
+ */
+bm.solve_DARE = function(A, B, Q, R) {
+  var maxIterations = 100;
+  var epsilon = 0.01;
+  var X = Q;
+  var aT = null;
+  var bT = null;
+  var pA = null;
+  var pB = null;
+  var pC = null;
+  var pD = null;
+  var pBCDQ = null;
+  var Xn = null;
+  var dif = null;
+
+  for (var i = 0; i < maxIterations; ++i) {
+    aT = bm.transpose(A);
+    bT = bm.transpose(B);
+    pA = bm.dot(bm.dot(aT, X), A);
+    pB = bm.dot(bm.dot(aT, X), B);
+    pC = bm.inv(bm.add(R, bm.dot(bm.dot(bT, X), B)));
+    pD = bm.dot(bm.dot(bT, X), A);
+    pBCDQ = bm.add(bm.dot(bm.dot(pB, pC), pD), Q);
+    Xn = bm.sub(pA, pBCDQ);
+    dif = bm.abs(bm.sub(Xn, X));
+
+    if (getMax(dif) < epsilon) {
+      X = Xn;
+      break;
+    }
+    X = Xn;
+  }
+
+  return bm.mul(Xn, -1);
+};
+
+/**
+ * Returns the state feedback gains
+ */
+bm.computeK = function(X, A, B, R) {
+  let bT = bm.transpose(B);
+  let p1 = bm.inv(bm.add(bm.dot(bm.dot(bT, X), B), R));
+  let p2 = bm.dot(bm.dot(bT, X), A);
+  return bm.dot(p1, p2);
+};

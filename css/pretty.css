@@ -56,11 +56,13 @@ p {
   background-color: #dce5f1;
 }
 
-#mapSelectText {
+#mapSelectText,
+#animationSpeedSelectText {
   margin-bottom: 0;
 }
 
-#mapSelect {
+#mapSelect,
+#animationSpeedSelect {
   width: 100%;
   height: 2em;
 }

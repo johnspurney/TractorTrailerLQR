@@ -11,6 +11,7 @@ let startSimButton = document.getElementById('startSimButton');
 let clearPathButton = document.getElementById('clearPathButton');
 let pathbrushStatus = document.getElementById('pathbrushStatus');
 let mapSelect = document.getElementById('mapSelect');
+let animationSpeedSelect = document.getElementById('animationSpeedSelect');
 let coordinateIndicator = document.getElementById('coordinateIndicator');
 let canvasDynamic = document.getElementById('canvasDynamic');
 let canvasBackground = document.getElementById('canvasBackground');
@@ -37,6 +38,8 @@ let waypointDistanceThreshold = 14;
 // If the vehicle is too far from the waypointIndex node, there is a limit to
 // how far away from waypointIndex the next node will be
 let waypointIndexLookAhead = 10;
+// Animation speed multiplier
+let animationSpeed = 1;
 
 let tractorTrailerSettings = {
   lengthTractor: 23,
@@ -113,6 +116,17 @@ function initializeMapSelect() {
     optionElement = document.createElement('option');
     optionElement.innerHTML = i.toString();
     mapSelect.appendChild(optionElement);
+  }
+}
+
+function initializeAnimationSpeedSelect() {
+  let optionElement = null;
+  let speeds = [1, 1.5, 2, 4, 8];
+
+  for (let i = 0; i < speeds.length; ++i) {
+    optionElement = document.createElement('option');
+    optionElement.innerHTML = speeds[i];
+    animationSpeedSelect.appendChild(optionElement);
   }
 }
 
@@ -206,6 +220,7 @@ canvasDynamic.addEventListener('mousemove', function(evt) {
 
 initializeMapSelect();
 initializeTractorTrailerSettingsForm();
+initializeAnimationSpeedSelect();
 
 let simulator = {
   simulationId: null,
@@ -214,6 +229,7 @@ let simulator = {
   vehicle: null,
 
   init: function() {
+    animationSpeed = Number(animationSpeedSelect.value);
     let map = new Image();
     map.src = `./maps/map_${mapSelect.value}.png`;
 
@@ -260,6 +276,8 @@ let simulator = {
   },
   loop: function(currentTime) {
     let dt = currentTime - simulator.previousTime;
+
+    dt = dt * animationSpeed;
 
     simulator.updateStep(dt);
     simulator.drawStep();

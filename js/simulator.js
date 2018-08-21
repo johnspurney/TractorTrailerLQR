@@ -15,7 +15,9 @@ let pathBrushActivated = false;
 let lastPathNodeIndex = 0;
 let waypointIndex = 0;
 let waypointClosenessThreshold = 8;
+let waypointTooFarThreshold = 20;
 let waypointDistanceThreshold = 14;
+let waypointIndexLookAhead = 10;
 let startSimButton = document.getElementById('startSimButton');
 let clearPathButton = document.getElementById('clearPathButton');
 let pathbrushStatus = document.getElementById('pathbrushStatus');
@@ -221,7 +223,11 @@ let simulator = {
     }
 
     if (simulator.objectsLoaded) {
-      // TODO: control and path tracking law
+      if (lastPathNodeIndex !== 0) {
+        updateWaypointIndex();
+        tractorTrailerSteeringController();
+      }
+
       simulator.vehicle.updateState(dt, simulator.vehicle.steeringAngle, 0);
     }
   },
@@ -254,3 +260,77 @@ let simulator = {
     cancelAnimationFrame(simulator.simulationId);
   }
 };
+
+function updateWaypointIndex() {
+  let x = null;
+  let y = null;
+
+  x = path[waypointIndex][0] - simulator.vehicle.xTrailer;
+  y = path[waypointIndex][1] - simulator.vehicle.yTrailer;
+  let distToWaypoint = Math.sqrt(x * x + y * y);
+
+  if (distToWaypoint <= waypointClosenessThreshold) {
+    if (waypointIndex + 1 < lastPathNodeIndex) {
+      waypointIndex += 1;
+    }
+  } else if (distToWaypoint >= waypointTooFarThreshold) {
+    let index = waypointIndex;
+    let dist = distToWaypoint;
+    let distNew = null;
+
+    for (
+      let i = waypointIndex;
+      i < lastPathNodeIndex && i < waypointIndex + waypointIndexLookAhead;
+      ++i
+    ) {
+      x = path[i][0] - simulator.vehicle.xTrailer;
+      y = path[i][1] - simulator.vehicle.yTrailer;
+      distNew = Math.sqrt(x * x + y * y);
+
+      if (distNew < dist) {
+        dist = distNew;
+        index = i;
+      }
+    }
+
+    waypointIndex = index;
+  }
+}
+
+function tractorTrailerSteeringController() {
+  let v = simulator.vehicle;
+
+  let A = [
+    [0, 0, 0],
+    [v.velocityTractor / v.lengthTrailer, -(v.velocityTractor / v.lengthTrailer), 0],
+    [0, v.velocityTrailer, 0]
+  ];
+
+  let B = [
+    [v.velocityTractor / v.lengthTractor],
+    [
+      -(v.lengthHitch * v.velocityTractor / (v.lengthTrailer * v.lengthTractor)) *
+        Math.cos(v.hitchAngle)
+    ],
+    [0]
+  ];
+
+  let C = [[0, 0, 1.0], [0, 1.0, 0]];
+
+  let Q = [[1.0, 0, 0], [0, 10.0, 0], [0, 0, 10.0]];
+
+  let R = [[0.001]];
+
+  let X = bm.solveDARE(A, B, Q, R);
+
+  let K = bm.computeK(X, A, B, R);
+
+  let xCurrent = [[v.thetaTractor], [v.thetaTrailer], [v.yTrailer]];
+  let xDesired = [[path[waypointIndex][2]], [path[waypointIndex][2]], [path[waypointIndex][1]]];
+
+  let dif = bm.sub(xDesired, xCurrent);
+
+  let u = K[0][1] * dif[1];
+
+  simulator.vehicle.steeringAngle = u;
+}

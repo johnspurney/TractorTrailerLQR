@@ -315,7 +315,7 @@ bm.solveDARE = function(A, B, Q, R) {
     Xn = bm.sub(pA, pBCDQ);
     dif = bm.abs(bm.sub(Xn, X));
 
-    if (getMax(dif) < epsilon) {
+    if (bm.max(dif) < epsilon) {
       X = Xn;
       break;
     }

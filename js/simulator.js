@@ -1,23 +1,12 @@
 const NUMBER_OF_MAPS = 8;
 const CANVAS_HEIGHT = 400;
 const CANVAS_WIDTH = 640;
+// Path nodes are squares in the simulator, this constant will affect their size
 const NODE_SIZE = 3;
 const PATH_NODE_COLOR = 'black';
 const TRACK_NODE_COLOR = 'red';
 const GOAL_NODE_COLOR = 'blue';
 
-// A flag to keep track of when the simulation is running
-let simulationStarted = false;
-// Path entries are in the following format: [xTrailer, yTrailer, thetaTrailer]
-let path = [];
-// Flag that keeps track of when the pathbrush is being used
-let pathBrushActivated = false;
-let lastPathNodeIndex = 0;
-let waypointIndex = 0;
-let waypointClosenessThreshold = 8;
-let waypointTooFarThreshold = 20;
-let waypointDistanceThreshold = 14;
-let waypointIndexLookAhead = 10;
 let startSimButton = document.getElementById('startSimButton');
 let clearPathButton = document.getElementById('clearPathButton');
 let pathbrushStatus = document.getElementById('pathbrushStatus');
@@ -28,6 +17,26 @@ let canvasBackground = document.getElementById('canvasBackground');
 let tractorTrailerSettingsForm = document.getElementById('tractorTrailerSettings');
 let ctxD = canvasDynamic.getContext('2d');
 let ctxB = canvasBackground.getContext('2d');
+
+// A flag to keep track of when the simulation is running
+let simulationStarted = false;
+// Path entries are in the following format: [xTrailer, yTrailer, thetaTrailer]
+let path = [];
+// Flag that keeps track of when the pathbrush is being used
+let pathBrushActivated = false;
+// The last node in the path wont have a thetaTrailer, this keeps track of the node
+let lastPathNodeIndex = 0;
+// Where the vehicle is trying to go next
+let waypointIndex = 0;
+// If the vehicle is close to the waypointIndex node, it will target the next one
+let waypointClosenessThreshold = 8;
+// If the vehicle is too far from the waypointIndex node, it will find a new target
+let waypointTooFarThreshold = 20;
+// The spacing between nodes when using the pathbrush
+let waypointDistanceThreshold = 14;
+// If the vehicle is too far from the waypointIndex node, there is a limit to
+// how far away from waypointIndex the next node will be
+let waypointIndexLookAhead = 10;
 
 let tractorTrailerSettings = {
   lengthTractor: 23,
@@ -96,7 +105,6 @@ function initializeTractorTrailerSettingsForm() {
     }
   });
 }
-initializeTractorTrailerSettingsForm();
 
 function initializeMapSelect() {
   let optionElement = null;
@@ -107,7 +115,6 @@ function initializeMapSelect() {
     mapSelect.appendChild(optionElement);
   }
 }
-initializeMapSelect();
 
 function drawPath() {
   for (let i = 0; i < path.length; ++i) {
@@ -196,6 +203,9 @@ canvasDynamic.addEventListener('mousemove', function(evt) {
     }
   }
 });
+
+initializeMapSelect();
+initializeTractorTrailerSettingsForm();
 
 let simulator = {
   simulationId: null,
